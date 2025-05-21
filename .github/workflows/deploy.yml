@@ -9,8 +9,8 @@ on:
       client_name:
         description: 'Client Name (e.g., clientA)'
         required: true
-      tag:
-        description: 'Git Tag to Deploy'
+      repo:
+        description: 'GitHub repo (e.g., OKInfimatrix/test1_repo)'
         required: true
 
 jobs:
@@ -19,10 +19,12 @@ jobs:
     environment: ${{ inputs.client_name }}
 
     steps:
-      - name: Checkout tag
+      - name: Checkout selected repo at tag
         uses: actions/checkout@v4
         with:
-          ref: ${{ inputs.tag }}
+          repository: ${{ inputs.repo }}
+          ref: ${{ github.ref_name }}  # Uses the tag from the event
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Deploy via SSH
         uses: appleboy/ssh-action@v1.0.3
@@ -32,4 +34,7 @@ jobs:
           key: ${{ secrets.EC2_KEY }}
           script: |
             echo "Deploying client: ${{ inputs.client_id }}"
-            ./deploy.sh ${{ inputs.client_id }}
+            cd simple-reactjs-app/
+            git fetch --tags
+            git checkout ${{ github.ref_name }}
+            ls -ltr

@@ -34,7 +34,7 @@ jobs:
           key: ${{ secrets.EC2_KEY }}
           script: |
             echo "Deploying client: ${{ inputs.client_id }}"
-            cd simple-reactjs-app/
+            cd test_repo/
             git fetch --tags
             git checkout ${{ github.ref_name }}
             ls -ltr

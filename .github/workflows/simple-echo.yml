@@ -1,0 +1,26 @@
+name: Simple Echo Workflow
+
+on:
+  push:
+    branches:
+      - main  # Trigger only on pushes to the main branch
+
+jobs:
+  echo-job:
+    runs-on: self-hosted
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Say Hello
+        run: echo "Hello from GitHub Actions!"
+
+      - name: Display Current Date
+        run: date
+
+      - name: Show Current Directory
+        run: pwd
+
+      - name: List Files
+        run: ls -la

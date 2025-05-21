@@ -12,6 +12,9 @@ on:
       repo:
         description: 'GitHub repo (e.g., OKInfimatrix/test1_repo)'
         required: true
+      tag:
+        description: 'Git Tag to Deploy'
+        required: true
 
 jobs:
   deploy:
@@ -23,7 +26,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: ${{ inputs.repo }}
-          ref: ${{ github.ref_name }}  # Uses the tag from the event
+          ref: ${{ inputs.tag }}
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Deploy via SSH
@@ -34,7 +37,5 @@ jobs:
           key: ${{ secrets.EC2_KEY }}
           script: |
             echo "Deploying client: ${{ inputs.client_id }}"
-            cd test_repo/
-            git fetch --tags
-            git checkout ${{ github.ref_name }}
             ls -ltr
+

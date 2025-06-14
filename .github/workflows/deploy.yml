@@ -1,0 +1,41 @@
+name: Client Deploy with Environments
+
+on:
+  workflow_dispatch:
+    inputs:
+      client_id:
+        description: 'Client ID'
+        required: true
+      client_name:
+        description: 'Client Name (e.g., clientA)'
+        required: true
+      repo:
+        description: 'GitHub repo (e.g., OKInfimatrix/test1_repo)'
+        required: true
+      tag:
+        description: 'Git Tag to Deploy'
+        required: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.client_name }}
+
+    steps:
+      - name: Checkout selected repo at tag
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ inputs.repo }}
+          ref: ${{ inputs.tag }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_KEY }}
+          script: |
+            echo "Deploying client: ${{ inputs.client_id }}"
+            ls -ltr
+
